@@ -1,0 +1,3 @@
+[submodule "vendor/WeakApp"]
+	path = vendor/WeakApp
+	url = git@github.com:nantonov/WeakApp.git
