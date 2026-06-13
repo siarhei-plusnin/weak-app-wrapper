@@ -1,0 +1,6 @@
+@WeakAppWrapper.WebApi_HostAddress = http://localhost:5012
+
+GET {{WeakAppWrapper.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
