@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
+COPY ["Directory.Build.props", "Directory.Packages.props", "./"]
 COPY ["src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj", "src/services/WeakAppWrapper.Processor/"]
 RUN dotnet restore "src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj"
 

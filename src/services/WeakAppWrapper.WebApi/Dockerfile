@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
+COPY ["Directory.Build.props", "Directory.Packages.props", "./"]
 COPY ["src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj", "src/services/WeakAppWrapper.WebApi/"]
 RUN dotnet restore "src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj"
 

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/services/">
+    <Project Path="src/services/WeakAppWrapper.Ingestor/WeakAppWrapper.Ingestor.csproj" />
+    <Project Path="src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj" />
+    <Project Path="src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj" />
+  </Folder>
+</Solution>
