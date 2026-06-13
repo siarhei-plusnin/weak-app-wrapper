@@ -1,0 +1,11 @@
+localhost {
+	tls internal
+
+	handle_path /api/* {
+		reverse_proxy web-api:8080
+	}
+
+	handle_path /ws/* {
+		reverse_proxy notification-service:8080
+	}
+}
