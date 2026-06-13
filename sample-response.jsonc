@@ -1,0 +1,140 @@
+[
+    {
+        "type": "motion",
+        "name": "Office",
+        "payload": {
+            "motionDetected": true
+        }
+    },
+    {
+        "type": "motion",
+        "name": "Garage",
+        "payload": {
+            "motionDetected": true
+        }
+    },
+    {
+        "type": "air_quality",
+        "name": "Garage",
+        "payload": {
+            "co2": 620,
+            "pm25": 42,
+            "humidity": 57
+        }
+    },
+    {
+        "type": "motion",
+        "name": "Bedroom",
+        "payload": {
+            "motionDetected": true
+        }
+    },
+    {
+        "type": "energy",
+        "name": "Living Room",
+        "payload": {
+            "energy": 185.26
+        }
+    },
+    {
+        "type": "air_quality",
+        "name": "Office",
+        "payload": {
+            "co2": 491,
+            "pm25": 12,
+            "humidity": 51
+        }
+    },
+    {
+        "type": "motion",
+        "name": "Living Room",
+        "payload": {
+            "motionDetected": false
+        }
+    },
+    {
+        "type": "air_quality",
+        "name": "Living Room",
+        "payload": {
+            "co2": 899,
+            "pm25": 5,
+            "humidity": 67
+        }
+    },
+    {
+        "type": "motion",
+        "name": "Corridor",
+        "payload": {
+            "motionDetected": false
+        }
+    },
+    {
+        "type": "energy",
+        "name": "Garage",
+        "payload": {
+            "energy": 417.84
+        }
+    },
+    {
+        "type": "energy",
+        "name": "Corridor",
+        "payload": {
+            "energy": 452.33
+        }
+    },
+    {
+        "type": "energy",
+        "name": "Kitchen",
+        "payload": {
+            "energy": 535.22
+        }
+    },
+    {
+        "type": "air_quality",
+        "name": "Corridor",
+        "payload": {
+            "co2": 742,
+            "pm25": 45,
+            "humidity": 27
+        }
+    },
+    {
+        "type": "air_quality",
+        "name": "Kitchen",
+        "payload": {
+            "co2": 748,
+            "pm25": 25,
+            "humidity": 68
+        }
+    },
+    {
+        "type": "energy",
+        "name": "Office",
+        "payload": {
+            "energy": 519.81
+        }
+    },
+    {
+        "type": "air_quality",
+        "name": "Bedroom",
+        "payload": {
+            "co2": 890,
+            "pm25": 33,
+            "humidity": 31
+        }
+    },
+    {
+        "type": "energy",
+        "name": "Bedroom",
+        "payload": {
+            "energy": 481.05
+        }
+    },
+    {
+        "type": "motion",
+        "name": "Kitchen",
+        "payload": {
+            "motionDetected": false
+        }
+    }
+]
