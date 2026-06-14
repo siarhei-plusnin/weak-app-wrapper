@@ -1,6 +1,10 @@
+using Confluent.Kafka;
+using KafkaFlow;
+using KafkaFlow.Serializer;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 using Polly;
+using WeakAppWrapper.Ingestor;
 using WeakAppWrapper.Ingestor.Application;
 using WeakAppWrapper.Ingestor.Configuration;
 using WeakAppWrapper.Ingestor.Infrastructure;
@@ -46,6 +50,32 @@ builder
     .Validate(configuration => !string.IsNullOrWhiteSpace(configuration.ClientId), "Kafka:ClientId must be provided")
     .ValidateOnStart();
 
+KafkaConfiguration kafka =
+    builder.Configuration.GetRequiredSection(KafkaConfiguration.SectionName).Get<KafkaConfiguration>()
+    ?? throw new InvalidOperationException("Kafka configuration section is required");
+
+builder.Services.AddKafkaFlowHostedService(kafkaFlow =>
+    kafkaFlow.AddCluster(cluster =>
+        cluster
+            .WithBrokers(
+                kafka.BootstrapServers.Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+                )
+            )
+            .CreateTopicIfNotExists(kafka.Topic, numberOfPartitions: 1, replicationFactor: 1)
+            .AddProducer(
+                WeakAppMetersIngestionWorker.KafkaProducerName,
+                producer =>
+                    producer
+                        .DefaultTopic(kafka.Topic)
+                        .WithAcks(KafkaFlow.Acks.All)
+                        .WithProducerConfig(new ProducerConfig { ClientId = kafka.ClientId })
+                        .AddMiddlewares(middlewares => middlewares.AddSerializer<JsonCoreSerializer>())
+            )
+    )
+);
+
 builder
     .Services.AddHttpClient(
         WeakAppMetersClient.HttpClientName,
@@ -80,7 +110,10 @@ builder
                 .AddTimeout(TimeSpan.FromSeconds(weakApp.TimeoutSeconds));
         }
     );
+
 builder.Services.AddSingleton<IWeakAppMetersClient, WeakAppMetersClient>();
+builder.Services.AddHostedService<WeakAppMetersIngestionWorker>();
 
 IHost host = builder.Build();
+
 host.Run();
