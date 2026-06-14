@@ -21,6 +21,10 @@ services:
       DOTNET_ENVIRONMENT: Development
       WeakApp__BaseUrl: http://weakapp:8080
       WeakApp__ApiKey: ${WEAKAPP_API_KEY:?WEAKAPP_API_KEY is required}
+      Kafka__BootstrapServers: kafka:9092
+      Kafka__Topic: weakapp.meters.raw
+      Kafka__ClientId: data-ingestor
+      Ingestor__PollIntervalSeconds: 30
     depends_on:
       - weakapp
     restart: unless-stopped
