@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WeakAppWrapper.Ingestor.Application;
+namespace WeakAppWrapper.Contracts.Messages;
 
 public sealed record WeakAppMetersPolledMessage(
     [property: JsonPropertyName("messageId")] string MessageId,

@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
-
   <PropertyGroup>
     <UserSecretsId>dotnet-WeakAppWrapper.Ingestor-b1cbbe2c-160b-446f-92bd-e73dabd80090</UserSecretsId>
   </PropertyGroup>
@@ -10,5 +9,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\WeakAppWrapper.Contracts\WeakAppWrapper.Contracts.csproj" />
   </ItemGroup>
 </Project>

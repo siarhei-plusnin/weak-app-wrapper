@@ -5,4 +5,7 @@
     <Project Path="src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj" />
     <Project Path="src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj" />
   </Folder>
+  <Folder Name="/src/shared/">
+    <Project Path="src/shared/WeakAppWrapper.Contracts/WeakAppWrapper.Contracts.csproj" />
+  </Folder>
 </Solution>
