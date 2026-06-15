@@ -85,6 +85,20 @@ services:
     environment:
       DOTNET_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=weakapp;Username=weakapp;Password=weakapp
+      Kafka__BootstrapServers: kafka:9092
+      Kafka__RawTopic: weakapp.meters.raw
+      Kafka__RawDeadLetterTopic: weakapp.meters.raw.dlq
+      Kafka__ProcessedTopic: readings.processed
+      Kafka__ConsumerGroup: data-processor
+      Kafka__ConsumerName: weakapp-meters-processor
+      Kafka__ClientId: data-processor
+      Kafka__WorkersCount: 1
+      Kafka__BufferSize: 100
+    depends_on:
+      kafka:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   web-api:

@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
-
   <PropertyGroup>
     <UserSecretsId>dotnet-WeakAppWrapper.Processor-a06ba0c8-21a5-4d56-b231-976c9f7bf98f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="KafkaFlow.Extensions.Hosting" />
+    <PackageReference Include="KafkaFlow.Serializer.JsonCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
