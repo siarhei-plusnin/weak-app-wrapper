@@ -4,8 +4,10 @@ using KafkaFlow.Serializer;
 using Microsoft.EntityFrameworkCore;
 using WeakAppWrapper.Contracts.Messages;
 using WeakAppWrapper.Processor.Application;
+using WeakAppWrapper.Processor.Application.Persistence;
 using WeakAppWrapper.Processor.Configuration;
 using WeakAppWrapper.Processor.Infrastructure.Kafka;
+using WeakAppWrapper.Processor.Infrastructure.Outbox;
 using WeakAppWrapper.Processor.Infrastructure.Persistence;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
@@ -39,6 +41,16 @@ builder
     .Validate(configuration => configuration.BufferSize > 0, "Kafka:BufferSize must be greater than zero")
     .ValidateOnStart();
 
+builder
+    .Services.AddOptions<OutboxConfiguration>()
+    .Bind(builder.Configuration.GetSection(OutboxConfiguration.SectionName))
+    .Validate(
+        configuration => configuration.PollIntervalSeconds > 0,
+        "Outbox:PollIntervalSeconds must be greater than zero"
+    )
+    .Validate(configuration => configuration.BatchSize > 0, "Outbox:BatchSize must be greater than zero")
+    .ValidateOnStart();
+
 string connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string is required");
@@ -59,8 +71,10 @@ builder.Services.AddDbContext<ProcessorDbContext>(options =>
     )
 );
 
+builder.Services.AddScoped<IProcessedReadingsOutboxStore, EfProcessedReadingsOutboxStore>();
 builder.Services.AddSingleton<IProcessingEventPublisher, KafkaProcessingEventPublisher>();
 builder.Services.AddScoped<WeakAppMetersProcessingService>();
+
 builder.Services.AddKafkaFlowHostedService(kafkaFlow =>
     kafkaFlow.AddCluster(cluster =>
         cluster
@@ -113,6 +127,8 @@ builder.Services.AddKafkaFlowHostedService(kafkaFlow =>
             )
     )
 );
+
+builder.Services.AddHostedService<ProcessedReadingsOutboxWorker>();
 
 IHost host = builder.Build();
 

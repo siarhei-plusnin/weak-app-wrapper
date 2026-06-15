@@ -94,6 +94,8 @@ services:
       Kafka__ClientId: data-processor
       Kafka__WorkersCount: 1
       Kafka__BufferSize: 100
+      Outbox__PollIntervalSeconds: 2
+      Outbox__BatchSize: 50
     depends_on:
       kafka:
         condition: service_started

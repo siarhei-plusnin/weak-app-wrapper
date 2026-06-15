@@ -52,6 +52,7 @@ public sealed class WeakAppMetersProcessingService(
         }
 
         var readings = new List<Reading>(normalizedReadings.Count);
+        var outboxMessages = new List<OutboxMessage>(normalizedReadings.Count);
 
         foreach (NormalizedReading normalizedReading in normalizedReadings)
         {
@@ -66,12 +67,37 @@ public sealed class WeakAppMetersProcessingService(
                 CreatedAt = DateTimeOffset.UtcNow,
             };
 
+            var outboxMessage = new OutboxMessage
+            {
+                EventType = OutboxEventTypes.ReadingsProcessed,
+                MessageKey = reading.Id.ToString("D"),
+                CorrelationId = message.MessageId,
+                Payload = JsonSerializer.Serialize(
+                    new ProcessedReadingMessage(
+                        Guid.NewGuid().ToString("D"),
+                        message.MessageId,
+                        reading.Id,
+                        reading.Source,
+                        reading.Type,
+                        reading.Name,
+                        reading.ObservedAt,
+                        reading.ReceivedAt,
+                        DateTimeOffset.UtcNow
+                    )
+                ),
+                OccurredAt = reading.CreatedAt,
+            };
+
             readings.Add(reading);
+            outboxMessages.Add(outboxMessage);
         }
 
         dbContext.Readings.AddRange(readings);
+        dbContext.OutboxMessages.AddRange(outboxMessages);
 
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        logger.ProcessedWeakAppMetersMessage(message.MessageId, readings.Count, outboxMessages.Count);
     }
 }
 
@@ -79,6 +105,17 @@ internal static partial class WeakAppMetersProcessingServiceLogs
 {
     [LoggerMessage(Level = LogLevel.Information, Message = "WeakApp meters message {MessageId} contained no readings")]
     internal static partial void NoReadingsFound(this ILogger logger, string messageId);
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Processed WeakApp meters message {MessageId}: {ReadingCount} readings inserted, {OutboxCount} outbox messages enqueued"
+    )]
+    internal static partial void ProcessedWeakAppMetersMessage(
+        this ILogger logger,
+        string messageId,
+        int readingCount,
+        int outboxCount
+    );
 
     [LoggerMessage(
         Level = LogLevel.Warning,
