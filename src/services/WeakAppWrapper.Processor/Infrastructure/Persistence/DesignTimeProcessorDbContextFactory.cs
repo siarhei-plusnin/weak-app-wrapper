@@ -19,7 +19,10 @@ public sealed class DesignTimeProcessorDbContextFactory : IDesignTimeDbContextFa
         string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
         var optionsBuilder = new DbContextOptionsBuilder<ProcessorDbContext>();
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseNpgsql(
+            connectionString,
+            npgsql => npgsql.MigrationsAssembly(typeof(ProcessorDbContext).Assembly.GetName().Name!)
+        );
 
         return new ProcessorDbContext(optionsBuilder.Options);
     }

@@ -1,7 +1,6 @@
 using Confluent.Kafka;
 using KafkaFlow;
 using KafkaFlow.Serializer;
-using Microsoft.EntityFrameworkCore;
 using WeakAppWrapper.Contracts.Messages;
 using WeakAppWrapper.Processor.Application;
 using WeakAppWrapper.Processor.Application.Persistence;
@@ -9,6 +8,7 @@ using WeakAppWrapper.Processor.Configuration;
 using WeakAppWrapper.Processor.Infrastructure.Kafka;
 using WeakAppWrapper.Processor.Infrastructure.Outbox;
 using WeakAppWrapper.Processor.Infrastructure.Persistence;
+using WeakAppWrapper.Persistence;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
@@ -59,17 +59,7 @@ KafkaConfiguration kafka =
     builder.Configuration.GetRequiredSection(KafkaConfiguration.SectionName).Get<KafkaConfiguration>()
     ?? throw new InvalidOperationException("Kafka configuration section is required");
 
-builder.Services.AddDbContext<ProcessorDbContext>(options =>
-    options.UseNpgsql(
-        connectionString,
-        npgsql =>
-            npgsql.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(10),
-                errorCodesToAdd: null
-            )
-    )
-);
+builder.Services.AddWeakAppPersistence(connectionString);
 
 builder.Services.AddScoped<IProcessedReadingsOutboxStore, EfProcessedReadingsOutboxStore>();
 builder.Services.AddSingleton<IProcessingEventPublisher, KafkaProcessingEventPublisher>();

@@ -6,17 +6,15 @@
   <ItemGroup>
     <PackageReference Include="KafkaFlow.Extensions.Hosting" />
     <PackageReference Include="KafkaFlow.Serializer.JsonCore" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\WeakAppWrapper.Contracts\WeakAppWrapper.Contracts.csproj" />
+    <ProjectReference Include="..\..\shared\WeakAppWrapper.Persistence\WeakAppWrapper.Persistence.csproj" />
   </ItemGroup>
 </Project>

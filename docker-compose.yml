@@ -127,8 +127,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 8080
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=weakapp;Username=weakapp;Password=weakapp;GSS Encryption Mode=Disable"
     expose:
       - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   notification-service:

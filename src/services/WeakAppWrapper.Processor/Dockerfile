@@ -4,6 +4,7 @@ WORKDIR /src
 COPY ["Directory.Build.props", "Directory.Packages.props", "./"]
 COPY ["src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj", "src/services/WeakAppWrapper.Processor/"]
 COPY ["src/shared/WeakAppWrapper.Contracts/WeakAppWrapper.Contracts.csproj", "src/shared/WeakAppWrapper.Contracts/"]
+COPY ["src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj", "src/shared/WeakAppWrapper.Persistence/"]
 RUN dotnet restore "src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj"
 
 COPY . .

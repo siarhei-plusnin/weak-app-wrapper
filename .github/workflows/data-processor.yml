@@ -6,6 +6,7 @@ on:
     paths:
       - src/services/WeakAppWrapper.Processor/**
       - src/shared/**
+      - WeakAppWrapper.slnx
       - Directory.Build.props
       - Directory.Packages.props
       - .editorconfig
@@ -38,6 +39,9 @@ jobs:
 
       - name: Format check
         run: dotnet format src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj --verify-no-changes --no-restore
+
+      - name: Persistence format check
+        run: dotnet format src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj --verify-no-changes --no-restore
 
       - name: Build
         run: dotnet build src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj --configuration Release --no-restore
