@@ -6,6 +6,7 @@ on:
     paths:
       - src/services/WeakAppWrapper.Ingestor/**
       - src/shared/**
+      - tests/WeakAppWrapper.Ingestor.Tests/**
       - Directory.Build.props
       - Directory.Packages.props
       - .editorconfig
@@ -20,7 +21,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Restore, format, and build
+    name: Build, format, test, and image
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -34,10 +35,19 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore src/services/WeakAppWrapper.Ingestor/WeakAppWrapper.Ingestor.csproj
+        run: dotnet restore tests/WeakAppWrapper.Ingestor.Tests/WeakAppWrapper.Ingestor.Tests.csproj
 
       - name: Format check
         run: dotnet format src/services/WeakAppWrapper.Ingestor/WeakAppWrapper.Ingestor.csproj --verify-no-changes --no-restore
 
+      - name: Test format check
+        run: dotnet format tests/WeakAppWrapper.Ingestor.Tests/WeakAppWrapper.Ingestor.Tests.csproj --verify-no-changes --no-restore
+
       - name: Build
         run: dotnet build src/services/WeakAppWrapper.Ingestor/WeakAppWrapper.Ingestor.csproj --configuration Release --no-restore
+
+      - name: Build ingestor tests
+        run: dotnet build tests/WeakAppWrapper.Ingestor.Tests/WeakAppWrapper.Ingestor.Tests.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/WeakAppWrapper.Ingestor.Tests/WeakAppWrapper.Ingestor.Tests.csproj --configuration Release --no-build --no-restore

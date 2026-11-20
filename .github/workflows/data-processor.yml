@@ -7,6 +7,7 @@ on:
       - src/services/WeakAppWrapper.Processor/**
       - src/shared/**
       - WeakAppWrapper.slnx
+      - tests/WeakAppWrapper.Processor.Tests/**
       - Directory.Build.props
       - Directory.Packages.props
       - .editorconfig
@@ -21,7 +22,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Restore, format, and build
+    name: Build, format, test, and image
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -35,7 +36,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj
+        run: dotnet restore tests/WeakAppWrapper.Processor.Tests/WeakAppWrapper.Processor.Tests.csproj
 
       - name: Format check
         run: dotnet format src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj --verify-no-changes --no-restore
@@ -43,5 +44,14 @@ jobs:
       - name: Persistence format check
         run: dotnet format src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj --verify-no-changes --no-restore
 
+      - name: Test format check
+        run: dotnet format tests/WeakAppWrapper.Processor.Tests/WeakAppWrapper.Processor.Tests.csproj --verify-no-changes --no-restore
+
       - name: Build
         run: dotnet build src/services/WeakAppWrapper.Processor/WeakAppWrapper.Processor.csproj --configuration Release --no-restore
+
+      - name: Build processor tests
+        run: dotnet build tests/WeakAppWrapper.Processor.Tests/WeakAppWrapper.Processor.Tests.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/WeakAppWrapper.Processor.Tests/WeakAppWrapper.Processor.Tests.csproj --configuration Release --no-build --no-restore
