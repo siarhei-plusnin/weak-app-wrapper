@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - src/services/WeakAppWrapper.Ingestor/**
+      - src/shared/**
       - Directory.Build.props
       - Directory.Packages.props
       - .editorconfig

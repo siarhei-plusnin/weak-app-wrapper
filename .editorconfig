@@ -21,6 +21,10 @@ charset = utf-8
 [*{_AssemblyInfo.cs,.g.cs,.g.i.cs,.Designer.cs}]
 generated_code = true
 
+# ef migrations
+[**/Migrations/*.cs]
+generated_code = true
+
 # C# files
 [*.cs]
 # New line preferences

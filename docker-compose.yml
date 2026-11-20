@@ -27,6 +27,38 @@ services:
       - kafka
     restart: unless-stopped
 
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_DB: weakapp
+      POSTGRES_USER: weakapp
+      POSTGRES_PASSWORD: weakapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weakapp -d weakapp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@weakapp.local
+      PGADMIN_DEFAULT_PASSWORD: weakapp
+      PGADMIN_CONFIG_ALLOW_SPECIAL_EMAIL_DOMAINS: "['local']"
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
   weakapp:
     build:
       context: ./vendor/WeakApp
@@ -66,6 +98,23 @@ services:
     container_name: data-processor
     environment:
       DOTNET_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=weakapp;Username=weakapp;Password=weakapp;GSS Encryption Mode=Disable"
+      Kafka__BootstrapServers: kafka:9092
+      Kafka__RawTopic: weakapp.meters.raw
+      Kafka__RawDeadLetterTopic: weakapp.meters.raw.dlq
+      Kafka__ProcessedTopic: readings.processed
+      Kafka__ConsumerGroup: data-processor
+      Kafka__ConsumerName: weakapp-meters-processor
+      Kafka__ClientId: data-processor
+      Kafka__WorkersCount: 1
+      Kafka__BufferSize: 100
+      Outbox__PollIntervalSeconds: 2
+      Outbox__BatchSize: 50
+    depends_on:
+      kafka:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   web-api:
@@ -78,8 +127,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 8080
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=weakapp;Username=weakapp;Password=weakapp;GSS Encryption Mode=Disable"
     expose:
       - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   notification-service:
@@ -107,5 +160,6 @@ services:
     restart: unless-stopped
 
 volumes:
+  postgres_data:
   caddy_data:
   caddy_config:

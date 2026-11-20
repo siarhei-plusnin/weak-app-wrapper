@@ -1,6 +1,7 @@
 using System.Text.Json;
 using KafkaFlow.Producers;
 using Microsoft.Extensions.Options;
+using WeakAppWrapper.Contracts.Messages;
 using WeakAppWrapper.Ingestor.Application;
 using WeakAppWrapper.Ingestor.Configuration;
 
