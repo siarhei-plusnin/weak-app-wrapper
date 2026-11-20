@@ -17,7 +17,7 @@ namespace WeakAppWrapper.Processor.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -81,11 +81,19 @@ namespace WeakAppWrapper.Processor.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTimeOffset>("CapturedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("captured_at");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("ItemIndex")
+                        .HasColumnType("integer")
+                        .HasColumnName("item_index");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -93,24 +101,26 @@ namespace WeakAppWrapper.Processor.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("name");
 
-                    b.Property<DateTimeOffset>("ObservedAt")
+                    b.Property<DateTimeOffset>("ProcessorReceivedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("observed_at");
+                        .HasColumnName("processor_received_at");
 
-                    b.Property<string>("Payload")
+                    b.Property<string>("RawRecord")
                         .IsRequired()
                         .HasColumnType("jsonb")
-                        .HasColumnName("payload");
-
-                    b.Property<DateTimeOffset>("ReceivedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("received_at");
+                        .HasColumnName("raw_record");
 
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("source");
+
+                    b.Property<string>("SourceMessageId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("source_message_id");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -121,20 +131,18 @@ namespace WeakAppWrapper.Processor.Migrations
                     b.HasKey("Id")
                         .HasName("pk_readings");
 
-                    b.HasIndex("Name")
-                        .HasDatabaseName("ix_readings_name");
+                    b.HasIndex("CapturedAt")
+                        .HasDatabaseName("ix_readings_captured_at");
 
-                    b.HasIndex("ObservedAt")
-                        .HasDatabaseName("ix_readings_observed_at");
+                    b.HasIndex("Name", "CapturedAt")
+                        .HasDatabaseName("ix_readings_name_captured_at");
 
-                    b.HasIndex("Type")
-                        .HasDatabaseName("ix_readings_type");
+                    b.HasIndex("Type", "CapturedAt")
+                        .HasDatabaseName("ix_readings_type_captured_at");
 
-                    b.HasIndex("Name", "ObservedAt")
-                        .HasDatabaseName("ix_readings_name_observed_at");
-
-                    b.HasIndex("Type", "ObservedAt")
-                        .HasDatabaseName("ix_readings_type_observed_at");
+                    b.HasIndex("Source", "SourceMessageId", "ItemIndex")
+                        .IsUnique()
+                        .HasDatabaseName("uq_readings_source_message_item");
 
                     b.ToTable("readings", (string)null);
                 });

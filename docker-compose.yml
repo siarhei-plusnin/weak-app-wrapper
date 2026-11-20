@@ -98,7 +98,7 @@ services:
     container_name: data-processor
     environment:
       DOTNET_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=weakapp;Username=weakapp;Password=weakapp
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=weakapp;Username=weakapp;Password=weakapp;GSS Encryption Mode=Disable"
       Kafka__BootstrapServers: kafka:9092
       Kafka__RawTopic: weakapp.meters.raw
       Kafka__RawDeadLetterTopic: weakapp.meters.raw.dlq

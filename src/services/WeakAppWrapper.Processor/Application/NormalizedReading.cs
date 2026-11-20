@@ -4,9 +4,11 @@ namespace WeakAppWrapper.Processor.Application;
 
 public sealed record NormalizedReading(
     string Source,
+    string SourceMessageId,
+    int ItemIndex,
     string Type,
     string Name,
     JsonElement Payload,
-    DateTimeOffset ObservedAt,
-    DateTimeOffset ReceivedAt
+    JsonElement RawRecord,
+    DateTimeOffset CapturedAt
 );

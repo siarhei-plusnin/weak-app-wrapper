@@ -6,9 +6,30 @@ namespace WeakAppWrapper.Processor.Application;
 public static class WeakAppReadingNormalizer
 {
     private const string DefaultSource = "weakapp";
+    private const int MaxSourceLength = 100;
+    private const int MaxSourceMessageIdLength = 200;
+    private const int MaxTypeLength = 100;
+    private const int MaxNameLength = 200;
 
     public static IReadOnlyList<NormalizedReading> Normalize(WeakAppMetersPolledMessage message)
     {
+        string messageId = ReadRequiredString(
+            message.MessageId,
+            "WeakApp poll messageId must be a non-empty string",
+            MaxSourceMessageIdLength
+        );
+
+        if (message.FetchedAt == default)
+        {
+            throw new WeakAppPayloadException("WeakApp poll is missing a valid fetchedAt timestamp");
+        }
+
+        string source = string.IsNullOrWhiteSpace(message.Source) ? DefaultSource : message.Source.Trim();
+        if (source.Length > MaxSourceLength)
+        {
+            throw new WeakAppPayloadException("WeakApp source exceeds the maximum supported length");
+        }
+
         if (message.Payload.ValueKind != JsonValueKind.Array)
         {
             throw new WeakAppPayloadException("WeakApp payload root must be a JSON array of meters");
@@ -16,7 +37,7 @@ public static class WeakAppReadingNormalizer
 
         return message
             .Payload.EnumerateArray()
-            .Select(meter =>
+            .Select((meter, itemIndex) =>
             {
                 if (meter.ValueKind != JsonValueKind.Object)
                 {
@@ -24,11 +45,13 @@ public static class WeakAppReadingNormalizer
                 }
 
                 return new NormalizedReading(
-                    string.IsNullOrWhiteSpace(message.Source) ? DefaultSource : message.Source.Trim(),
-                    ReadRequiredString(meter, "type", "WeakApp meter is missing a type"),
-                    ReadRequiredString(meter, "name", "WeakApp meter is missing a name"),
+                    source,
+                    messageId,
+                    itemIndex,
+                    ReadRequiredString(meter, "type", "WeakApp meter type must be a non-empty string", MaxTypeLength),
+                    ReadRequiredString(meter, "name", "WeakApp meter name must be a non-empty string", MaxNameLength),
                     ReadPayloadObject(meter).Clone(),
-                    message.FetchedAt,
+                    meter.Clone(),
                     message.FetchedAt
                 );
             })
@@ -45,16 +68,29 @@ public static class WeakAppReadingNormalizer
         return payload;
     }
 
-    private static string ReadRequiredString(JsonElement element, string propertyName, string errorMessage) =>
-        TryReadString(element, propertyName)?.Trim() ?? throw new WeakAppPayloadException(errorMessage);
-
-    private static string? TryReadString(JsonElement element, string propertyName)
+    private static string ReadRequiredString(JsonElement element, string propertyName, string errorMessage, int maxLength)
     {
-        if (!element.TryGetProperty(propertyName, out JsonElement property))
+        if (!element.TryGetProperty(propertyName, out JsonElement property) || property.ValueKind != JsonValueKind.String)
         {
-            return null;
+            throw new WeakAppPayloadException(errorMessage);
         }
 
-        return property.ValueKind == JsonValueKind.String ? property.GetString() : property.GetRawText();
+        return ReadRequiredString(property.GetString(), errorMessage, maxLength);
+    }
+
+    private static string ReadRequiredString(string? value, string errorMessage, int maxLength)
+    {
+        string normalized = value?.Trim() ?? string.Empty;
+        if (normalized.Length == 0)
+        {
+            throw new WeakAppPayloadException(errorMessage);
+        }
+
+        if (normalized.Length > maxLength)
+        {
+            throw new WeakAppPayloadException($"WeakApp value exceeds the maximum supported length of {maxLength}");
+        }
+
+        return normalized;
     }
 }

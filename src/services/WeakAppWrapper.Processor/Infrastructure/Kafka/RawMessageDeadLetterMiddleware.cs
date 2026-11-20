@@ -19,7 +19,7 @@ public sealed class RawMessageDeadLetterMiddleware(
         {
             await next(context);
         }
-        catch (Exception exception)
+        catch (JsonException exception)
         {
             string sourceMessageId =
                 ReadMessagePart(context.Message.Key)
@@ -36,19 +36,34 @@ public sealed class RawMessageDeadLetterMiddleware(
                 }
             );
 
-            await eventPublisher.PublishRawDeadLetterAsync(
-                new RawMessageDeadLetterMessage(
-                    Guid.NewGuid().ToString("D"),
-                    sourceMessageId,
-                    Source,
-                    DateTimeOffset.UtcNow,
-                    exception.GetType().Name,
-                    exception.Message,
-                    rawMessage
-                ),
-                context.ConsumerContext.WorkerStopped
-            );
+            try
+            {
+                await eventPublisher.PublishRawDeadLetterAsync(
+                    new RawMessageDeadLetterMessage(
+                        Guid.NewGuid().ToString("D"),
+                        sourceMessageId,
+                        Source,
+                        DateTimeOffset.UtcNow,
+                        exception.GetType().Name,
+                        exception.Message,
+                        rawMessage
+                    ),
+                    context.ConsumerContext.WorkerStopped
+                );
+            }
+            catch
+            {
+                context.ConsumerContext.ShouldStoreOffset = false;
+                throw;
+            }
+
             logger.PublishedMalformedRawMessageToDeadLetter(exception, sourceMessageId);
+        }
+        catch (Exception exception)
+        {
+            context.ConsumerContext.ShouldStoreOffset = false;
+            logger.FailedToProcessRawKafkaMessage(exception, context.ConsumerContext.Topic, context.ConsumerContext.Offset);
+            throw;
         }
     }
 
@@ -73,5 +88,16 @@ internal static partial class RawMessageDeadLetterMiddlewareLogs
         this ILogger logger,
         Exception exception,
         string sourceMessageId
+    );
+
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Failed to process raw Kafka message from topic {Topic} at offset {Offset}; offset was not stored"
+    )]
+    internal static partial void FailedToProcessRawKafkaMessage(
+        this ILogger logger,
+        Exception exception,
+        string topic,
+        long offset
     );
 }
