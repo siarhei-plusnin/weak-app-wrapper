@@ -2,13 +2,13 @@ using Confluent.Kafka;
 using KafkaFlow;
 using KafkaFlow.Serializer;
 using WeakAppWrapper.Contracts.Messages;
+using WeakAppWrapper.Persistence;
 using WeakAppWrapper.Processor.Application;
 using WeakAppWrapper.Processor.Application.Persistence;
 using WeakAppWrapper.Processor.Configuration;
 using WeakAppWrapper.Processor.Infrastructure.Kafka;
 using WeakAppWrapper.Processor.Infrastructure.Outbox;
 using WeakAppWrapper.Processor.Infrastructure.Persistence;
-using WeakAppWrapper.Persistence;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 

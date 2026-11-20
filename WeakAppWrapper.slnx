@@ -7,8 +7,10 @@
   </Folder>
   <Folder Name="/src/shared/">
     <Project Path="src/shared/WeakAppWrapper.Contracts/WeakAppWrapper.Contracts.csproj" />
-    <Folder Name="/src/shared/WeakAppWrapper.Persistence/">
-      <Project Path="src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj" />
-    </Folder>
+    <Project Path="src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WeakAppWrapper.Ingestor.Tests/WeakAppWrapper.Ingestor.Tests.csproj" />
+    <Project Path="tests/WeakAppWrapper.Processor.Tests/WeakAppWrapper.Processor.Tests.csproj" />
   </Folder>
 </Solution>
