@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace WeakAppWrapper.WebApi.GraphQL;
 
@@ -10,7 +11,7 @@ public static class GraphQLValidation
         CancellationToken cancellationToken
     )
     {
-        var result = await validator.ValidateAsync(request, cancellationToken);
+        ValidationResult result = await validator.ValidateAsync(request, cancellationToken);
         if (result.IsValid)
         {
             return;
