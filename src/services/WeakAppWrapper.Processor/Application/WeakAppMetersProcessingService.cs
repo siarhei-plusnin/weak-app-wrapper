@@ -2,14 +2,15 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using WeakAppWrapper.Contracts.Messages;
+using WeakAppWrapper.Persistence.Domain;
+using WeakAppWrapper.Persistence.Infrastructure.Persistence;
 using WeakAppWrapper.Processor.Domain;
-using WeakAppWrapper.Processor.Infrastructure.Persistence;
-using WeakAppWrapper.Processor.Infrastructure.Persistence.Configurations;
+using WeakAppWrapper.Persistence.Infrastructure.Persistence.Configurations;
 
 namespace WeakAppWrapper.Processor.Application;
 
 public sealed class WeakAppMetersProcessingService(
-    ProcessorDbContext dbContext,
+    ApplicationDbContext dbContext,
     IProcessingEventPublisher eventPublisher,
     ILogger<WeakAppMetersProcessingService> logger
 )

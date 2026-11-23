@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WeakAppWrapper.Processor.Migrations
+namespace WeakAppWrapper.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

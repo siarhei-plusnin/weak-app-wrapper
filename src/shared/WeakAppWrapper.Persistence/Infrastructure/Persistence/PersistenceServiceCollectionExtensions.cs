@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using WeakAppWrapper.Processor.Infrastructure.Persistence;
 
-namespace WeakAppWrapper.Persistence;
+namespace WeakAppWrapper.Persistence.Infrastructure.Persistence;
 
 public static class PersistenceServiceCollectionExtensions
 {
@@ -10,12 +9,12 @@ public static class PersistenceServiceCollectionExtensions
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
 
-        services.AddDbContext<ProcessorDbContext>(options =>
+        services.AddDbContextFactory<ApplicationDbContext>(options =>
             options.UseNpgsql(
                 connectionString,
                 npgsql =>
                 {
-                    npgsql.MigrationsAssembly(typeof(ProcessorDbContext).Assembly.GetName().Name!);
+                    npgsql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name);
                     npgsql.EnableRetryOnFailure(
                         maxRetryCount: 5,
                         maxRetryDelay: TimeSpan.FromSeconds(10),

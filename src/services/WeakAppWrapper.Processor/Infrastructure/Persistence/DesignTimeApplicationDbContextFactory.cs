@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using WeakAppWrapper.Persistence.Infrastructure.Persistence;
 
 namespace WeakAppWrapper.Processor.Infrastructure.Persistence;
 
-public sealed class DesignTimeProcessorDbContextFactory : IDesignTimeDbContextFactory<ProcessorDbContext>
+public sealed class DesignTimeApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
-    public ProcessorDbContext CreateDbContext(string[] args)
+    public ApplicationDbContext CreateDbContext(string[] args)
     {
         string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
@@ -18,12 +19,12 @@ public sealed class DesignTimeProcessorDbContextFactory : IDesignTimeDbContextFa
 
         string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        var optionsBuilder = new DbContextOptionsBuilder<ProcessorDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         optionsBuilder.UseNpgsql(
             connectionString,
-            npgsql => npgsql.MigrationsAssembly(typeof(ProcessorDbContext).Assembly.GetName().Name!)
+            npgsql => npgsql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name)
         );
 
-        return new ProcessorDbContext(optionsBuilder.Options);
+        return new ApplicationDbContext(optionsBuilder.Options);
     }
 }

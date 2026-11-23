@@ -4,7 +4,7 @@ using WeakAppWrapper.Contracts.Messages;
 using WeakAppWrapper.Processor.Application;
 using WeakAppWrapper.Processor.Application.Persistence;
 using WeakAppWrapper.Processor.Configuration;
-using WeakAppWrapper.Processor.Domain;
+using WeakAppWrapper.Persistence.Domain;
 
 namespace WeakAppWrapper.Processor.Infrastructure.Outbox;
 

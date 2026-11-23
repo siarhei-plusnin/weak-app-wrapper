@@ -1,4 +1,4 @@
-using WeakAppWrapper.Processor.Domain;
+using WeakAppWrapper.Persistence.Domain;
 
 namespace WeakAppWrapper.Processor.Application.Persistence;
 
