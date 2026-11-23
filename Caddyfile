@@ -1,7 +1,19 @@
 localhost {
 	tls internal
 
-	handle_path /api/* {
+	handle /api/* {
+		reverse_proxy web-api:8080
+	}
+
+	handle /graphql* {
+		reverse_proxy web-api:8080
+	}
+
+	handle /openapi/* {
+		reverse_proxy web-api:8080
+	}
+
+	handle /swagger {
 		reverse_proxy web-api:8080
 	}
 

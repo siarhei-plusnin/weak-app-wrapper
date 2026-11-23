@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WeakAppWrapper.Processor.Domain;
+using WeakAppWrapper.Persistence.Domain;
 
-namespace WeakAppWrapper.Processor.Infrastructure.Persistence.Configurations;
+namespace WeakAppWrapper.Persistence.Infrastructure.Persistence.Configurations;
 
 public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {

@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using WeakAppWrapper.Persistence.Domain;
+using WeakAppWrapper.Persistence.Infrastructure.Persistence;
 using WeakAppWrapper.Processor.Application.Persistence;
 using WeakAppWrapper.Processor.Domain;
 
 namespace WeakAppWrapper.Processor.Infrastructure.Persistence;
 
-public sealed class EfProcessedReadingsOutboxStore(ProcessorDbContext dbContext) : IProcessedReadingsOutboxStore
+public sealed class EfProcessedReadingsOutboxStore(ApplicationDbContext dbContext) : IProcessedReadingsOutboxStore
 {
     public async Task<IReadOnlyList<OutboxMessage>> GetPendingAsync(
         int batchSize,

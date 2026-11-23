@@ -2,7 +2,7 @@ using Confluent.Kafka;
 using KafkaFlow;
 using KafkaFlow.Serializer;
 using WeakAppWrapper.Contracts.Messages;
-using WeakAppWrapper.Persistence;
+using WeakAppWrapper.Persistence.Infrastructure.Persistence;
 using WeakAppWrapper.Processor.Application;
 using WeakAppWrapper.Processor.Application.Persistence;
 using WeakAppWrapper.Processor.Configuration;

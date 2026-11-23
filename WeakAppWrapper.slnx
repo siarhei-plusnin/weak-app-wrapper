@@ -12,5 +12,6 @@
   <Folder Name="/tests/">
     <Project Path="tests/WeakAppWrapper.Ingestor.Tests/WeakAppWrapper.Ingestor.Tests.csproj" />
     <Project Path="tests/WeakAppWrapper.Processor.Tests/WeakAppWrapper.Processor.Tests.csproj" />
+    <Project Path="tests/WeakAppWrapper.WebApi.Tests/WeakAppWrapper.WebApi.Tests.csproj" />
   </Folder>
 </Solution>

@@ -3,6 +3,7 @@ WORKDIR /src
 
 COPY ["Directory.Build.props", "Directory.Packages.props", "./"]
 COPY ["src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj", "src/services/WeakAppWrapper.WebApi/"]
+COPY ["src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj", "src/shared/WeakAppWrapper.Persistence/"]
 RUN dotnet restore "src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj"
 
 COPY . .

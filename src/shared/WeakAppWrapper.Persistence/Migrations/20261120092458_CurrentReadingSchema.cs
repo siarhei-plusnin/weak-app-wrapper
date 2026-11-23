@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WeakAppWrapper.Processor.Migrations
+namespace WeakAppWrapper.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class CurrentReadingSchema : Migration

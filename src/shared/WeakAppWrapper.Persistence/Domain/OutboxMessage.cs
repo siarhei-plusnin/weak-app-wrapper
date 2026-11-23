@@ -1,4 +1,4 @@
-namespace WeakAppWrapper.Processor.Domain;
+namespace WeakAppWrapper.Persistence.Domain;
 
 public sealed class OutboxMessage
 {

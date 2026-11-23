@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using WeakAppWrapper.Processor.Infrastructure.Persistence;
+using WeakAppWrapper.Persistence.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace WeakAppWrapper.Processor.Migrations
+namespace WeakAppWrapper.Persistence.Migrations
 {
-    [DbContext(typeof(ProcessorDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20261120092458_CurrentReadingSchema")]
     partial class CurrentReadingSchema
     {
@@ -25,7 +25,7 @@ namespace WeakAppWrapper.Processor.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WeakAppWrapper.Processor.Domain.OutboxMessage", b =>
+            modelBuilder.Entity("WeakAppWrapper.Persistence.Domain.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -78,7 +78,7 @@ namespace WeakAppWrapper.Processor.Migrations
                     b.ToTable("outbox_messages", (string)null);
                 });
 
-            modelBuilder.Entity("WeakAppWrapper.Processor.Domain.Reading", b =>
+            modelBuilder.Entity("WeakAppWrapper.Persistence.Domain.Reading", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")

@@ -5,6 +5,8 @@ on:
     branches: [master]
     paths:
       - src/services/WeakAppWrapper.WebApi/**
+      - src/shared/WeakAppWrapper.Persistence/**
+      - tests/WeakAppWrapper.WebApi.Tests/**
       - Directory.Build.props
       - Directory.Packages.props
       - .editorconfig
@@ -19,7 +21,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Restore, format, and build
+    name: Restore, format, test, and build
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -33,10 +35,19 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj
+        run: dotnet restore tests/WeakAppWrapper.WebApi.Tests/WeakAppWrapper.WebApi.Tests.csproj
 
       - name: Format check
         run: dotnet format src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj --verify-no-changes --no-restore
+
+      - name: Persistence format check
+        run: dotnet format src/shared/WeakAppWrapper.Persistence/WeakAppWrapper.Persistence.csproj --verify-no-changes --no-restore
+
+      - name: Test project format check
+        run: dotnet format tests/WeakAppWrapper.WebApi.Tests/WeakAppWrapper.WebApi.Tests.csproj --verify-no-changes --no-restore
+
+      - name: Tests
+        run: dotnet test tests/WeakAppWrapper.WebApi.Tests/WeakAppWrapper.WebApi.Tests.csproj --configuration Release --no-restore
 
       - name: Build
         run: dotnet build src/services/WeakAppWrapper.WebApi/WeakAppWrapper.WebApi.csproj --configuration Release --no-restore
