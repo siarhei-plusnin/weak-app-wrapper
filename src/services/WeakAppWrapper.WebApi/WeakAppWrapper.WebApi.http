@@ -1,6 +1,35 @@
 @WeakAppWrapper.WebApi_HostAddress = http://localhost:5012
 
-GET {{WeakAppWrapper.WebApi_HostAddress}}/weatherforecast/
+### Health
+GET {{WeakAppWrapper.WebApi_HostAddress}}/api/health
 Accept: application/json
+
+### Filtered and paginated readings
+GET {{WeakAppWrapper.WebApi_HostAddress}}/api/readings?type=air_quality&metricKey=co2&minValue=400&page=1&pageSize=20&sortBy=capturedAt&sortDirection=desc
+Accept: application/json
+
+### Latest readings
+GET {{WeakAppWrapper.WebApi_HostAddress}}/api/readings/latest?source=weakapp
+Accept: application/json
+
+### Aggregations by location
+GET {{WeakAppWrapper.WebApi_HostAddress}}/api/aggregations/by-location?metricKey=co2
+Accept: application/json
+
+### Aggregations by type
+GET {{WeakAppWrapper.WebApi_HostAddress}}/api/aggregations/by-type
+Accept: application/json
+
+### Aggregations by time
+GET {{WeakAppWrapper.WebApi_HostAddress}}/api/aggregations/by-time?bucket=hour&metricKey=co2
+Accept: application/json
+
+### GraphQL readings
+POST {{WeakAppWrapper.WebApi_HostAddress}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { readings(page: 1, pageSize: 5) { totalCount items { id source type name capturedAt } } }"
+}
 
 ###
