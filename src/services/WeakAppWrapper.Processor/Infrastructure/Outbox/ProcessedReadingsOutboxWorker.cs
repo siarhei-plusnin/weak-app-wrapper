@@ -1,10 +1,10 @@
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using WeakAppWrapper.Contracts.Messages;
+using WeakAppWrapper.Persistence.Domain;
 using WeakAppWrapper.Processor.Application;
 using WeakAppWrapper.Processor.Application.Persistence;
 using WeakAppWrapper.Processor.Configuration;
-using WeakAppWrapper.Persistence.Domain;
 
 namespace WeakAppWrapper.Processor.Infrastructure.Outbox;
 

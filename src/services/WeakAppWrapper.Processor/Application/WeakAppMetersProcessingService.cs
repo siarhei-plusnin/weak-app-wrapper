@@ -4,8 +4,8 @@ using Npgsql;
 using WeakAppWrapper.Contracts.Messages;
 using WeakAppWrapper.Persistence.Domain;
 using WeakAppWrapper.Persistence.Infrastructure.Persistence;
-using WeakAppWrapper.Processor.Domain;
 using WeakAppWrapper.Persistence.Infrastructure.Persistence.Configurations;
+using WeakAppWrapper.Processor.Domain;
 
 namespace WeakAppWrapper.Processor.Application;
 
