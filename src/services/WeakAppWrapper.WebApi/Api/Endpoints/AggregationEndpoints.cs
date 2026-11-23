@@ -19,19 +19,22 @@ public static class AggregationEndpoints
                     CancellationToken cancellationToken
                 ) =>
                 {
-                    ReadingFilter filter = parameters.ToReadingFilter();
-                    ReadingAggregationSpecification specification = new(
-                        filter,
-                        ReadingAggregationDimension.Location,
-                        TimeBucket.Hour
-                    );
-                    List<AggregationQueryRow> rows = await db.Apply(specification).ToListAsync(cancellationToken);
+                    List<AggregationQueryRow> rows = await db.Apply(
+                            new ReadingAggregationSpecification(
+                                parameters.ToReadingFilter(),
+                                ReadingAggregationDimension.Location
+                            )
+                        )
+                        .ToListAsync(cancellationToken);
+
                     return Results.Ok(rows.Select(row => row.ToAggregationResponse()).ToArray());
                 }
             )
+            .ValidateWithFluentValidation<ReadingQueryParameters>(ReadingQueryParametersValidator.FilterRuleSet)
             .WithName("GetAggregationsByLocation")
             .WithSummary("Aggregate readings by source and location name.")
-            .Produces<IReadOnlyList<AggregationResponse>>();
+            .Produces<IReadOnlyList<AggregationResponse>>()
+            .ProducesValidationProblem();
 
         api.MapGet(
                 "/aggregations/by-type",
@@ -41,19 +44,22 @@ public static class AggregationEndpoints
                     CancellationToken cancellationToken
                 ) =>
                 {
-                    ReadingFilter filter = parameters.ToReadingFilter();
-                    ReadingAggregationSpecification specification = new(
-                        filter,
-                        ReadingAggregationDimension.Type,
-                        TimeBucket.Hour
-                    );
-                    List<AggregationQueryRow> rows = await db.Apply(specification).ToListAsync(cancellationToken);
+                    List<AggregationQueryRow> rows = await db.Apply(
+                            new ReadingAggregationSpecification(
+                                parameters.ToReadingFilter(),
+                                ReadingAggregationDimension.Type
+                            )
+                        )
+                        .ToListAsync(cancellationToken);
+
                     return Results.Ok(rows.Select(row => row.ToAggregationResponse()).ToArray());
                 }
             )
+            .ValidateWithFluentValidation<ReadingQueryParameters>(ReadingQueryParametersValidator.FilterRuleSet)
             .WithName("GetAggregationsByType")
             .WithSummary("Aggregate readings by source and meter type.")
-            .Produces<IReadOnlyList<AggregationResponse>>();
+            .Produces<IReadOnlyList<AggregationResponse>>()
+            .ProducesValidationProblem();
 
         api.MapGet(
                 "/aggregations/by-time",
@@ -63,19 +69,26 @@ public static class AggregationEndpoints
                     CancellationToken cancellationToken
                 ) =>
                 {
-                    ReadingFilter filter = parameters.ToReadingFilter();
-                    ReadingAggregationSpecification specification = new(
-                        filter,
-                        ReadingAggregationDimension.Time,
-                        parameters.ToTimeBucket()
-                    );
-                    List<AggregationQueryRow> rows = await db.Apply(specification).ToListAsync(cancellationToken);
+                    List<AggregationQueryRow> rows = await db.Apply(
+                            new ReadingAggregationSpecification(
+                                parameters.ToReadingFilter(),
+                                ReadingAggregationDimension.Time,
+                                parameters.ToTimeBucket()
+                            )
+                        )
+                        .ToListAsync(cancellationToken);
+
                     return Results.Ok(rows.Select(row => row.ToAggregationResponse()).ToArray());
                 }
             )
+            .ValidateWithFluentValidation<ReadingQueryParameters>(
+                ReadingQueryParametersValidator.FilterRuleSet,
+                ReadingQueryParametersValidator.TimeBucketRuleSet
+            )
             .WithName("GetAggregationsByTime")
             .WithSummary("Aggregate readings into minute, hour, or day buckets.")
-            .Produces<IReadOnlyList<AggregationResponse>>();
+            .Produces<IReadOnlyList<AggregationResponse>>()
+            .ProducesValidationProblem();
 
         return api;
     }

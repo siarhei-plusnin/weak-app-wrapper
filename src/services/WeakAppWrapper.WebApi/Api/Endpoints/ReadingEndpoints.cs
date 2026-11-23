@@ -35,9 +35,14 @@ public static class ReadingEndpoints
                     return Results.Ok(new ReadingPageResponse(items, totalCount, request.Page, request.PageSize));
                 }
             )
+            .ValidateWithFluentValidation<ReadingQueryParameters>(
+                ReadingQueryParametersValidator.FilterRuleSet,
+                ReadingQueryParametersValidator.ReadingsRuleSet
+            )
             .WithName("GetReadings")
             .WithSummary("Get a filtered, sorted page of readings.")
-            .Produces<ReadingPageResponse>();
+            .Produces<ReadingPageResponse>()
+            .ProducesValidationProblem();
 
         api.MapGet(
                 "/readings/latest",
@@ -47,17 +52,19 @@ public static class ReadingEndpoints
                     CancellationToken cancellationToken
                 ) =>
                 {
-                    LatestReadingsSpecification specification = new(parameters.ToReadingFilter());
-                    List<ReadingProjection> rows = await db
-                        .Apply(specification)
+                    List<ReadingProjection> rows = await db.Apply(
+                            new LatestReadingsSpecification(parameters.ToReadingFilter())
+                        )
                         .ToListAsync(cancellationToken);
 
                     return Results.Ok(rows.Select(row => row.ToReadingResponse()).ToArray());
                 }
             )
+            .ValidateWithFluentValidation<ReadingQueryParameters>(ReadingQueryParametersValidator.FilterRuleSet)
             .WithName("GetLatestReadings")
             .WithSummary("Get the latest reading for each source, location name, and type.")
-            .Produces<IReadOnlyList<ReadingResponse>>();
+            .Produces<IReadOnlyList<ReadingResponse>>()
+            .ProducesValidationProblem();
 
         return api;
     }
